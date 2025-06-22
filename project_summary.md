@@ -44,6 +44,8 @@ For each estimate, display
   - React for UI  
   - Material UI for UI components  
   - Recharts for plotting beta distribution and HDI  
+	  + [https://recharts.org/en-US/api/LineChart](`LineChart`) for PDF
+	  + [https://recharts.org/en-US/api/ReferenceArea](`ReferenceArea`) for HDI band 
   - Containerized using Docker
 
 - **Backend:**  
@@ -63,26 +65,25 @@ For each estimate, display
 ### 1. Define the API Contract  
 **Goal:** Clearly specify the shape and content of data exchanged between backend and frontend.
 
-#### Substeps:
-- **a. Specify plot data structure:**  
-  - Since we are using Recharts, the PDF should be sent as an array of objects:  
-    ```json
-    [
-      {"x": 0.00, "y": 0.12},
-      {"x": 0.01, "y": 0.13},
-      ...
-    ]
-    ```
-- **b. Specify HDI shading data:**  
-  - Decide how to communicate which points should be shaded (under the HDI interval [L, U]).  
-  - Options include:
-    - Add a boolean flag to each point object (e.g., `{ "x": 0.23, "y": 0.15, "in_hdi": true }`)
-    - Specify HDI endpoints separately, and the frontend identifies points within the interval
-    - Return a separate array of (x, y) pairs just for the HDI region
-- **c. Specify additional statistics:**  
-  - Include mode, mean, a, b, confidence_level, L, U as separate fields in the JSON.
-- **d. Draft example API response:**  
-  - Assemble a sample JSON object reflecting all the above.
+The names used in the code will differ from the user-facing terminology. For example, the user will see "confidence level" but the code will use `hdi_mass`. When I'm writing in this file I"ll use $L, U$ but the code will use `hdi_lower, hdi_upper`.
+
+#### **Example API response:**  
+ 
+```json
+{
+  "a": 3,
+  "b": 5,
+  "hdi_mass": 0.95,
+  "pdf": [
+    { "x": 0.00, "y": 0.02 },
+    { "x": 0.01, "y": 0.04 },
+    // ...
+  ],
+  "hdi_lower": 0.23,
+  "hdi_upper": 0.70,
+  "mode": 0.55
+}
+```
 
 ### 2. Draft Backend Skeleton (FastAPI)
 - Scaffold endpoint(s) that return the example response with dummy data.
