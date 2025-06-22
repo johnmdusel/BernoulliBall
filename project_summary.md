@@ -62,7 +62,7 @@ For each estimate, display
 
 ## Next Steps
 
-### 1. Define the API Contract  
+### 1. (DONE) Define the API Contract  
 **Goal:** Clearly specify the shape and content of data exchanged between backend and frontend.
 
 The names used in the code will differ from the user-facing terminology. For example, the user will see "confidence level" but the code will use `hdi_mass`. When I'm writing in this file I"ll use $L, U$ but the code will use `hdi_lower, hdi_upper`.
@@ -83,6 +83,32 @@ The names used in the code will differ from the user-facing terminology. For exa
   "hdi_upper": 0.70,
   "mode": 0.55
 }
+```
+
+### 1. Setup directory structure 
+
+```
+BernoulliBall/
+├── backend/                  # FastAPI app lives here
+│   ├── app/
+│   │   ├── __init__.py
+│   │   ├── main.py           # FastAPI entrypoint
+│   │   ├── api.py            # API routes
+│   │   ├── models.py         # Pydantic models (request/response)
+│   │   └── utils.py          # HDI and Beta PDF logic
+│   ├── requirements.txt
+│   └── Dockerfile
+├── frontend/                 # React app lives here
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── App.js
+│   │   └── index.js
+│   ├── package.json
+│   └── Dockerfile
+├── docker-compose.yml
+├── README.md
+└── project_summary.md
 ```
 
 ### 2. Draft Backend Skeleton (FastAPI)
