@@ -111,7 +111,7 @@ BernoulliBall/
 └── project_summary.md
 ```
 
-### 3. Draft Backend Skeleton (FastAPI)
+### 3. (DONE) Draft Backend Skeleton (FastAPI)
 - Scaffold endpoint(s) that return the example response with dummy data.
 
 ### 4. Draft Frontend Skeleton (React + Material UI + Recharts)
