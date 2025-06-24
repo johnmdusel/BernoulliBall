@@ -20,14 +20,14 @@ A web app for maintaining and visualizing multiple independent estimates of the 
 3. **Data Visualization:**  
 For each estimate, display 
    - The beta distribution PDF over [0, 1].
-   - The HDI $L \le p \le U$ is shown as a shaded region.
+   - The HDI $[L, U]$ is shown as a highlighted region on the horizontal axis of the PDF plot.
    - The mode $p^*$ is visually indicated on the plot.
-   - A message like "Success rate is between $L$ and $U$ (at confidence level), most likely value is $p^*$."
+   - A message like "Success rate is between $L$ and $U$ (at confidence level), most likely success rate is $p^*$."
 
 4. **User Interaction:**  
-   - Users can set prior values for $a, b$ when creating an estimate.
+   - User can set prior values for $a, b$ when creating an estimate.
    - Users can increment or decrement $a, b$ by 1 using up/down arrow buttons.
-   - No authentication, persistence, import, or export – session-based and anonymous.
+   - Session-based and anonymous. No authentication, persistence, import, or export.
 
 5. **Design:**  
    - Minimalist and clean UI.
@@ -85,7 +85,7 @@ The names used in the code will differ from the user-facing terminology. For exa
 }
 ```
 
-### 1. Setup directory structure 
+### 2. (DONE) Setup directory structure 
 
 ```
 BernoulliBall/
@@ -111,19 +111,14 @@ BernoulliBall/
 └── project_summary.md
 ```
 
-### 2. Draft Backend Skeleton (FastAPI)
+### 3. Draft Backend Skeleton (FastAPI)
 - Scaffold endpoint(s) that return the example response with dummy data.
 
-### 3. Draft Frontend Skeleton (React + Material UI + Recharts)
+### 4. Draft Frontend Skeleton (React + Material UI + Recharts)
 - Build a UI that queries the backend and displays the plot and statistics using the agreed API contract.
 
-### 4. Dockerize Backend and Frontend
+### 5. Dockerize Backend and Frontend
 - Write Dockerfiles for both, and a `docker-compose.yml` to orchestrate them.
 
-### 5. Document Everything
+### 6. Document Everything
 - Update README with API contract, setup, and usage instructions.
-
----
-
-**Summary:**  
-BernoulliBall will now use Recharts for plotting, with plot data passed as an array of objects. The next major task is to finalize the API contract, especially for representing HDI shading, before building out backend and frontend skeletons.
