@@ -111,14 +111,14 @@ BernoulliBall/
 └── project_summary.md
 ```
 
-### 3. (DONE) Draft Backend Skeleton (FastAPI)
-- Scaffold endpoint(s) that return the example response with dummy data.
-
-### 4. Draft Frontend Skeleton (React + Material UI + Recharts)
-- Build a UI that queries the backend and displays the plot and statistics using the agreed API contract.
-
 ### 5. Dockerize Backend and Frontend
 - Write Dockerfiles for both, and a `docker-compose.yml` to orchestrate them.
+
+To build the backend/frontend containers  
+```shell
+docker compose up --build
+```
+Going forward, just use `docker compose up` to run.
 
 ### 6. Document Everything
 - Update README with API contract, setup, and usage instructions.
