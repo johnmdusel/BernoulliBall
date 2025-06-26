@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Container, Typography, Card, CardContent, CircularProgress } from '@mui/material';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ReferenceArea, ReferenceDot } from 'recharts';
 
-// Dummy API endpoint from backend FastAPI
-// const API_URL = 'http://localhost:8000/api/estimate';
 const API_URL = 'http://localhost:8000/estimate';
 
 function App() {
@@ -14,13 +12,13 @@ function App() {
 
   // Fetch data from backend on mount
   useEffect(() => {
-    fetch(API_URL)
-        .then(res => res.json())
+    fetch(API_URL)  // Make HTTP GET request to backend
+        .then(res => res.json())  // Wait for response then parse as JSON
         .then(data => {
-          setEstimate(data);
-          setLoading(false);
+          setEstimate(data);  // Save result in React state
+          setLoading(false);  // Indicate loading is complete
         })
-        .catch(() => setLoading(false));
+        .catch(() => setLoading(false));  // Stop loading (leave estimate null) if any error
   }, []);
 
   if (loading) return <CircularProgress />;

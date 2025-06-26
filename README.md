@@ -1,4 +1,4 @@
-# Project Summary: BernoulliBall
+# BernoulliBall
 
 ## Purpose
 A web app for maintaining and visualizing multiple independent estimates of the probability of success for Bernoulli trials, with a focus on clean, minimalist user experience and learning full-stack (frontend/backend) development concepts.
@@ -60,14 +60,13 @@ For each estimate, display
 
 ---
 
-## Next Steps
+## API Contract  
 
-### 1. (DONE) Define the API Contract  
-**Goal:** Clearly specify the shape and content of data exchanged between backend and frontend.
+The names used in the code will differ from the user-facing terminology. 
+For example, the user will see "confidence level" but the code will use `hdi_mass`. 
+When I'm writing in this file I"ll use $L, U$ but the code will use `hdi_lower, hdi_upper`.
 
-The names used in the code will differ from the user-facing terminology. For example, the user will see "confidence level" but the code will use `hdi_mass`. When I'm writing in this file I"ll use $L, U$ but the code will use `hdi_lower, hdi_upper`.
-
-#### **Example API response:**  
+### **Example API response:**  
  
 ```json
 {
@@ -85,7 +84,7 @@ The names used in the code will differ from the user-facing terminology. For exa
 }
 ```
 
-### 2. (DONE) Setup directory structure 
+## Directory structure 
 
 ```
 BernoulliBall/
@@ -111,14 +110,13 @@ BernoulliBall/
 └── project_summary.md
 ```
 
-### 5. Dockerize Backend and Frontend
-- Write Dockerfiles for both, and a `docker-compose.yml` to orchestrate them.
+## Dockerized Backend and Frontend
 
 To build the backend/frontend containers  
 ```shell
 docker compose up --build
 ```
+
 Going forward, just use `docker compose up` to run.
 
-### 6. Document Everything
-- Update README with API contract, setup, and usage instructions.
+To remove containers and the internal Docker network, run `docker compose down`.
