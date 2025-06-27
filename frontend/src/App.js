@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Typography, Card, CardContent, CircularProgress } from '@mui/material';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ReferenceArea, ReferenceDot } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, ReferenceArea, Cross, ReferenceDot, Label } from 'recharts';
 
 const API_URL = 'http://localhost:8000/estimate';
 
@@ -25,8 +25,9 @@ function App() {
 
   if (!estimate) return <Typography>Error loading data</Typography>;
 
-  // For display: extract the relevant values
-  const { a, b, hdi_mass, pdf, hdi_lower, hdi_upper, mode } = estimate;
+  const { a, b, hdi_mass, pdf, hdi_lower_x, hdi_lower_y, hdi_upper_x, hdi_upper_y, mode } = estimate;
+
+  const mode_y = Math.max(...pdf.map(p => p.y))
 
   return (
       <Container maxWidth="sm" sx={{ mt: 4 }}>
@@ -36,19 +37,27 @@ function App() {
         <Card>
           <CardContent>
             {/* Plotting Beta PDF */}
-            <LineChart width={400} height={200} data={pdf}>
-              <XAxis dataKey="Success Rate" type="number" domain={[0, 1]} />
-              <YAxis dataKey="Likelihood" type="number"/>
-              <Tooltip />
-              <Line type="monotone" dataKey="y" stroke="#1976d2" dot={false} />
-              {/* Highlight HDI */}
-              <ReferenceArea x1={hdi_lower} x2={hdi_upper} strokeOpacity={0.3} fill="#90caf9" />
+            <LineChart width={400} height={200} data={pdf} margin={{top: 10, bottom: 10, left: 10, right: 10}} >
+              <XAxis dataKey="x" type="number" domain={[0, 1]}>
+                  <Label value="Success Rate" offset={-5} position="insideBottom" />
+              </XAxis>
+                <YAxis dataKey="y" type="number" tick={false}>
+                    <Label value="Likelihood" offset={0} angle={-90} position="insideLeft" />
+                </YAxis>
+              <Line type="monotone" dataKey="y" stroke="#8884d8" dot={false} activeDot={false} />
+              <ReferenceArea
+                  x1={hdi_lower_x}
+                  y1={0}
+                  x2={hdi_upper_x}
+                  y2={0.02 * mode_y}
+                  strokeOpacity={0.3}
+                  fill="red" />
               {/* Show the mode */}
-              <ReferenceDot x={mode} y={Math.max(...pdf.map(p => p.y))} r={5} fill="#388e3c" />
+              <ReferenceDot x={mode} y={mode_y} r={5} fill="#388e3c" />
             </LineChart>
             {/* Display statistics */}
             <Typography>
-              Success rate is between <b>{hdi_lower.toFixed(2)}</b> and <b>{hdi_upper.toFixed(2)}</b>
+              Success rate is between <b>{hdi_lower_x.toFixed(2)}</b> and <b>{hdi_upper_x.toFixed(2)}</b>
               {" "}at {Math.round(hdi_mass * 100)}% confidence. <br/>
               Most likely success rate is <b>{mode.toFixed(2)}</b>.
             </Typography>
