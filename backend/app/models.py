@@ -8,10 +8,12 @@ class PDFPoint(BaseModel):
 
 
 class EstimateResponse(BaseModel):
-    a: int
-    b: int
+    a: float
+    b: float
     hdi_mass: float
     pdf: List[PDFPoint]
-    hdi_lower: float
-    hdi_upper: float
+    hdi_lower_x: float
+    hdi_lower_y: float
+    hdi_upper_x: float
+    hdi_upper_y: float
     mode: float
