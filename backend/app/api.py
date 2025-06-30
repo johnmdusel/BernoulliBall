@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from .models import EstimateResponse
 
-from .utils import evaluate_pdf, get_pdf, get_mode, get_hdi
+from .utils import evaluate_pdf, get_unnormalized_pdf, get_mode, get_hdi
 
 router = APIRouter()
 
@@ -13,7 +13,7 @@ def get_estimate(a: float = 3, b: float = 5, hdi_mass: float = 0.95) -> Estimate
         a=a,
         b=b,
         hdi_mass=hdi_mass,
-        pdf=get_pdf(a, b),
+        pdf=get_unnormalized_pdf(a, b),
         hdi_lower_x=hdi_lo,
         hdi_lower_y=evaluate_pdf(a, b, hdi_lo),
         hdi_upper_x=hdi_hi,
