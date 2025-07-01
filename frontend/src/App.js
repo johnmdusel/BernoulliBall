@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Container, Typography, Card, CardContent, CircularProgress, TextField, Button, Box, Alert } from '@mui/material';
 import { LineChart, Line, XAxis, YAxis, ReferenceArea, ReferenceDot, Label } from 'recharts';
 
@@ -20,33 +20,6 @@ function App() {
     const isValidB = Number.isInteger(b) && b > 0;
     const isValidHdi = Number.isInteger(hdiMass) && hdiMass > 0 && hdiMass < 100;
     const isValid = isValidA && isValidB && isValidHdi;
-
-    // // Fetch from backend
-    // const fetchEstimate = (params = {}) => {
-    //     setLoading(true);
-    //     setErrorMsg("");
-    //     const url = `${API_URL}?a=${params.a ?? a}&b=${params.b ?? b}&hdi_mass=${params.hdiMass ?? hdiMass}`;
-    //     fetch(url)
-    //         .then(res => {
-    //             if (!res.ok) throw new Error("Backend validation failed");
-    //             return res.json();
-    //         })
-    //         .then(data => {
-    //             setEstimate(data);
-    //             setLoading(false);
-    //         })
-    //         .catch(err => {
-    //             setEstimate(null);
-    //             setLoading(false);
-    //             setErrorMsg("Failed to fetch estimate: " + err.message);
-    //         });
-    // };
-
-    // // Initial fetch
-    // useEffect(() => {
-    //     fetchEstimate();
-    //     // eslint-disable-next-line
-    // }, []);
 
     // Handlers
     const handleA = e => {
@@ -138,7 +111,7 @@ function App() {
             {/* Loading or chart */}
             {loading && <CircularProgress />}
             {!loading && estimate && (() => {
-                const { a, b, hdi_mass, pdf, hdi_lower_x, hdi_lower_y, hdi_upper_x, hdi_upper_y, mode } = estimate;
+                const { a, b, hdi_mass, pdf, hdi_lower_x, hdi_upper_x, mode } = estimate;
                 const mode_y = Math.max(...pdf.map(p => p.y));
                 return (
                     <Card>
@@ -152,21 +125,32 @@ function App() {
                                     <Label value="Likelihood" offset={0} angle={-90} position="insideLeft" />
                                 </YAxis>
                                 <Line type="monotone" dataKey="y" stroke="#8884d8" dot={false} activeDot={false} />
-                                <ReferenceArea
-                                    x1={hdi_lower_x}
-                                    y1={0}
-                                    x2={hdi_upper_x}
-                                    y2={0.02 * mode_y}
-                                    strokeOpacity={0.3}
-                                    fill="red" />
-                                {/* Show the mode */}
-                                <ReferenceDot x={mode} y={mode_y} r={5} fill="#388e3c" />
+                                {hdi_lower_x != null && hdi_upper_x != null && (
+                                    <ReferenceArea
+                                        x1={hdi_lower_x}
+                                        y1={0}
+                                        x2={hdi_upper_x}
+                                        y2={0.02 * mode_y}
+                                        strokeOpacity={0.3}
+                                        fill="red"
+                                    />
+                                )}
+                                {/* Only show ReferenceDot if mode exists */}
+                                {mode != null && (
+                                    <ReferenceDot x={mode} y={mode_y} r={5} fill="#388e3c" />
+                                )}
                             </LineChart>
                             {/* Display statistics */}
+                            {/*<Typography>*/}
+                            {/*    Success rate is between <b>{hdi_lower_x.toFixed(2)}</b> and <b>{hdi_upper_x.toFixed(2)}</b>*/}
+                            {/*    {" "}at {Math.round(hdi_mass * 100)}% confidence. <br />*/}
+                            {/*    Most likely success rate is <b>{mode.toFixed(2)}</b>.*/}
+                            {/*</Typography>*/}
                             <Typography>
-                                Success rate is between <b>{hdi_lower_x.toFixed(2)}</b> and <b>{hdi_upper_x.toFixed(2)}</b>
-                                {" "}at {Math.round(hdi_mass * 100)}% confidence. <br />
-                                Most likely success rate is <b>{mode.toFixed(2)}</b>.
+                                Success rate is between <b>{hdi_lower_x != null ? hdi_lower_x.toFixed(2) : "N/A"}</b>
+                                and <b>{hdi_upper_x != null ? hdi_upper_x.toFixed(2) : "N/A"}</b>
+                                {" "}at {Math.round(hdi_mass * 100)}% confidence. <br/>
+                                Most likely success rate is <b>{mode != null ? mode.toFixed(2) : "N/A"}</b>.
                             </Typography>
                             <Typography variant="caption" color="textSecondary">
                                 Parameters: a = {a}, b = {b}

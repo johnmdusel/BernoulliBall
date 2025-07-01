@@ -21,12 +21,7 @@ def get_unnormalized_pdf(a: float, b: float, n_points: int = 100) -> List[PDFPoi
 def get_mode(a: float, b: float) -> Union[float, None]:
     """
     Mode of beta distribution.
-
-    :param a: Parameter.
-    :param b: Parameter.
     """
-    if a <= 1 or b <= 1:
-        return None  # TODO check if handled correctly
     return (a - 1) / (a + b - 2)
 
 

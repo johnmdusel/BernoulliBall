@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 
 
 class PDFPoint(BaseModel):
@@ -12,8 +12,6 @@ class EstimateResponse(BaseModel):
     b: float
     hdi_mass: float
     pdf: List[PDFPoint]
-    hdi_lower_x: float
-    hdi_lower_y: float
-    hdi_upper_x: float
-    hdi_upper_y: float
-    mode: float
+    hdi_lower_x: Optional[float]
+    hdi_upper_x: Optional[float]
+    mode: Optional[float]
