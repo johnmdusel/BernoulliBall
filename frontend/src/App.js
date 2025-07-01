@@ -21,32 +21,32 @@ function App() {
     const isValidHdi = Number.isInteger(hdiMass) && hdiMass > 0 && hdiMass < 100;
     const isValid = isValidA && isValidB && isValidHdi;
 
-    // Fetch from backend
-    const fetchEstimate = (params = {}) => {
-        setLoading(true);
-        setErrorMsg("");
-        const url = `${API_URL}?a=${params.a ?? a}&b=${params.b ?? b}&hdi_mass=${params.hdiMass ?? hdiMass}`;
-        fetch(url)
-            .then(res => {
-                if (!res.ok) throw new Error("Backend validation failed");
-                return res.json();
-            })
-            .then(data => {
-                setEstimate(data);
-                setLoading(false);
-            })
-            .catch(err => {
-                setEstimate(null);
-                setLoading(false);
-                setErrorMsg("Failed to fetch estimate: " + err.message);
-            });
-    };
+    // // Fetch from backend
+    // const fetchEstimate = (params = {}) => {
+    //     setLoading(true);
+    //     setErrorMsg("");
+    //     const url = `${API_URL}?a=${params.a ?? a}&b=${params.b ?? b}&hdi_mass=${params.hdiMass ?? hdiMass}`;
+    //     fetch(url)
+    //         .then(res => {
+    //             if (!res.ok) throw new Error("Backend validation failed");
+    //             return res.json();
+    //         })
+    //         .then(data => {
+    //             setEstimate(data);
+    //             setLoading(false);
+    //         })
+    //         .catch(err => {
+    //             setEstimate(null);
+    //             setLoading(false);
+    //             setErrorMsg("Failed to fetch estimate: " + err.message);
+    //         });
+    // };
 
-    // Initial fetch
-    useEffect(() => {
-        fetchEstimate();
-        // eslint-disable-next-line
-    }, []);
+    // // Initial fetch
+    // useEffect(() => {
+    //     fetchEstimate();
+    //     // eslint-disable-next-line
+    // }, []);
 
     // Handlers
     const handleA = e => {
@@ -64,10 +64,23 @@ function App() {
 
     const handleSubmit = e => {
         e.preventDefault();
-        if (isValid) {
-            hdiMass = hdiMass / 100;
-            fetchEstimate({a, b, hdiMass});
-        }
+        if (!isValid) return;
+        setLoading(true);
+        setErrorMsg("");
+        fetch(`${API_URL}?a=${a}&b=${b}&hdi_mass=${hdiMass/100}`)
+            .then(res => {
+                if (!res.ok) throw new Error("Backend validation failed");
+                return res.json();
+            })
+            .then(data => {
+                setEstimate(data);
+                setLoading(false);
+            })
+            .catch(err => {
+                setEstimate(null);
+                setLoading(false);
+                setErrorMsg("Failed to fetch estimate: " + err.message);
+            });
     };
 
     return (
