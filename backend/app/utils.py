@@ -34,7 +34,7 @@ def get_hdi(a: float, b: float, hdi_mass: float) -> Tuple[float, Tuple[float, fl
     :param hdi_mass: Confidence level from UI
     :return: width, (lower_limit, upper_limit) of highest density interval
     """
-    samples = sorted(_sample_beta(a, b, n=10**4))
+    samples = sorted(_sample_beta(a, b, n=10**5))
     idx_lo = 0
     idx_hi = int(hdi_mass * len(samples))
     endpoints = []

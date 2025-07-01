@@ -124,7 +124,7 @@ function App() {
                                 <YAxis dataKey="y" type="number" tick={false}>
                                     <Label value="Likelihood" offset={0} angle={-90} position="insideLeft" />
                                 </YAxis>
-                                <Line type="monotone" dataKey="y" stroke="#8884d8" dot={false} activeDot={false} />
+                                <Line type="monotone" dataKey="y" stroke="#8884d8" dot={false} activeDot={false} isAnimationActive={false} />
                                 {hdi_lower_x != null && hdi_upper_x != null && (
                                     <ReferenceArea
                                         x1={hdi_lower_x}
@@ -147,13 +147,12 @@ function App() {
                             {/*    Most likely success rate is <b>{mode.toFixed(2)}</b>.*/}
                             {/*</Typography>*/}
                             <Typography>
-                                Success rate is between <b>{hdi_lower_x != null ? hdi_lower_x.toFixed(2) : "N/A"}</b>
-                                and <b>{hdi_upper_x != null ? hdi_upper_x.toFixed(2) : "N/A"}</b>
+                                Success rate is between <b>{hdi_lower_x != null ? hdi_lower_x.toFixed(2) : "N/A"}</b> and <b>{hdi_upper_x != null ? hdi_upper_x.toFixed(2) : "N/A"}</b>
                                 {" "}at {Math.round(hdi_mass * 100)}% confidence. <br/>
                                 Most likely success rate is <b>{mode != null ? mode.toFixed(2) : "N/A"}</b>.
                             </Typography>
                             <Typography variant="caption" color="textSecondary">
-                                Parameters: a = {a}, b = {b}
+                                Showing # Successes: {a}, # Failures: {b}
                             </Typography>
                         </CardContent>
                     </Card>
