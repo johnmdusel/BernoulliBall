@@ -25,7 +25,7 @@ def get_mode(a: float, b: float) -> Union[float, None]:
     :param a: Parameter.
     :param b: Parameter.
     """
-    if a < 1 or b < 1:
+    if a <= 1 or b <= 1:
         return None  # TODO check if handled correctly
     return (a - 1) / (a + b - 2)
 
@@ -39,7 +39,7 @@ def get_hdi(a: float, b: float, hdi_mass: float) -> Tuple[float, Tuple[float, fl
     :param hdi_mass: Confidence level from UI
     :return: width, (lower_limit, upper_limit) of highest density interval
     """
-    samples = sorted(_sample_beta(a, b, n=10**3))
+    samples = sorted(_sample_beta(a, b, n=10**4))
     idx_lo = 0
     idx_hi = int(hdi_mass * len(samples))
     endpoints = []
@@ -58,4 +58,5 @@ def get_hdi(a: float, b: float, hdi_mass: float) -> Tuple[float, Tuple[float, fl
 
 
 def _sample_beta(a: float, b: float, n: int) -> List[float]:
+    random.seed(42)
     return [random.betavariate(a, b) for _ in range(n)]
