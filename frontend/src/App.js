@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Typography, Card, CardContent, CircularProgress, TextField, Button, Box, Alert } from '@mui/material';
+import { Container, Typography, Card, CardContent, CircularProgress, TextField, Box, Alert } from '@mui/material';
 import { LineChart, Line, XAxis, YAxis, ReferenceArea, ReferenceDot, Label } from 'recharts';
 
 const API_URL = 'http://localhost:8000/estimate';
@@ -15,32 +15,15 @@ function App() {
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
 
-    // Validation logic
-    const isValidA = Number.isInteger(a) && a > 0;
-    const isValidB = Number.isInteger(b) && b > 0;
-    const isValidHdi = Number.isInteger(hdiMass) && hdiMass > 0 && hdiMass < 100;
-    const isValid = isValidA && isValidB && isValidHdi;
+    // Fetches the estimate with provided parameters, after validation
+    function fetchEstimate(aVal, bVal, hdiVal) {
+        if (!(Number.isInteger(aVal) && aVal > 0)) return;
+        if (!(Number.isInteger(bVal) && bVal > 0)) return;
+        if (!(Number.isInteger(hdiVal) && hdiVal > 0 && hdiVal < 100)) return;
 
-    // Handlers
-    const handleA = e => {
-        const val = parseInt(e.target.value, 10);
-        setA(Number.isNaN(val) ? "" : Math.max(1, val));
-    };
-    const handleB = e => {
-        const val = parseInt(e.target.value, 10);
-        setB(Number.isNaN(val) ? "" : Math.max(1, val));
-    };
-    const handleHdi = e => {
-        const val = parseInt(e.target.value, 10);
-        setHdiMass(Number.isNaN(val) ? "" : val);
-    };
-
-    const handleSubmit = e => {
-        e.preventDefault();
-        if (!isValid) return;
         setLoading(true);
         setErrorMsg("");
-        fetch(`${API_URL}?a=${a}&b=${b}&hdi_mass=${hdiMass/100}`)
+        fetch(`${API_URL}?a=${aVal}&b=${bVal}&hdi_mass=${hdiVal/100}`)
             .then(res => {
                 if (!res.ok) throw new Error("Backend validation failed");
                 return res.json();
@@ -54,6 +37,31 @@ function App() {
                 setLoading(false);
                 setErrorMsg("Failed to fetch estimate: " + err.message);
             });
+    }
+
+    // Validation logic
+    const isValidA = Number.isInteger(a) && a > 0;
+    const isValidB = Number.isInteger(b) && b > 0;
+    const isValidHdi = Number.isInteger(hdiMass) && hdiMass > 0 && hdiMass < 100;
+
+    // Handlers
+    const handleA = e => {
+        const val = parseInt(e.target.value, 10);
+        const newA = Number.isNaN(val) ? "" : Math.max(1, val);
+        setA(newA);
+        fetchEstimate(newA, b, hdiMass); // use current b, hdiMass
+    };
+    const handleB = e => {
+        const val = parseInt(e.target.value, 10);
+        const newB = Number.isNaN(val) ? "" : Math.max(1, val);
+        setB(newB);
+        fetchEstimate(a, newB, hdiMass); // use current a, hdiMass
+    };
+    const handleHdi = e => {
+        const val = parseInt(e.target.value, 10);
+        const newHdi = Number.isNaN(val) ? "" : val;
+        setHdiMass(newHdi);
+        fetchEstimate(a, b, newHdi); // use current a, b
     };
 
     return (
@@ -64,46 +72,41 @@ function App() {
             {/* Parameter controls */}
             <Card sx={{ mb: 2 }}>
                 <CardContent>
-                    <form onSubmit={handleSubmit}>
-                        <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-                            <TextField
-                                label="# Successes"
-                                type="number"
-                                value={a}
-                                onChange={handleA}
-                                inputProps={{ min: 1, step: 1 }}
-                                error={!isValidA}
-                                helperText={!isValidA ? "Must be integer > 0" : ""}
-                                required
-                                fullWidth
-                            />
-                            <TextField
-                                label="# Failures"
-                                type="number"
-                                value={b}
-                                onChange={handleB}
-                                inputProps={{ min: 1, step: 1 }}
-                                error={!isValidB}
-                                helperText={!isValidB ? "Must be integer > 0" : ""}
-                                required
-                                fullWidth
-                            />
-                            <TextField
-                                label="Confidence Level (%)"
-                                type="number"
-                                value={hdiMass}
-                                onChange={handleHdi}
-                                inputProps={{ min: 1, max: 99, step: 1 }}
-                                error={!isValidHdi}
-                                helperText={!isValidHdi ? "Must be integer between 0 and 100 (exclusive)" : ""}
-                                required
-                                fullWidth
-                            />
-                        </Box>
-                        <Button type="submit" variant="contained" color="primary" disabled={!isValid || loading}>
-                            Update Estimate
-                        </Button>
-                    </form>
+                    <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                        <TextField
+                            label="# Successes"
+                            type="number"
+                            value={a}
+                            onChange={handleA}
+                            slotProps={{ input: {min: 1, step: 1} }}
+                            error={!isValidA}
+                            helperText={!isValidA ? "Must be integer > 0" : ""}
+                            required
+                            fullWidth
+                        />
+                        <TextField
+                            label="# Failures"
+                            type="number"
+                            value={b}
+                            onChange={handleB}
+                            slotProps={{ input: {min: 1, step: 1} }}
+                            error={!isValidB}
+                            helperText={!isValidB ? "Must be integer > 0" : ""}
+                            required
+                            fullWidth
+                        />
+                        <TextField
+                            label="Confidence Level (%)"
+                            type="number"
+                            value={hdiMass}
+                            onChange={handleHdi}
+                            slotProps={{ input: {min: 1, max: 99, step: 1} }}
+                            error={!isValidHdi}
+                            helperText={!isValidHdi ? "Must be integer between 0 and 100 (exclusive)" : ""}
+                            required
+                            fullWidth
+                        />
+                    </Box>
                 </CardContent>
             </Card>
             {/* Error message */}
@@ -117,14 +120,37 @@ function App() {
                     <Card>
                         <CardContent>
                             {/* Plotting Beta PDF */}
-                            <LineChart width={400} height={200} data={pdf} margin={{ top: 10, bottom: 10, left: 10, right: 10 }} >
-                                <XAxis dataKey="x" type="number" domain={[0, 1]}>
-                                    <Label value="Success Rate" offset={-5} position="insideBottom" />
+                            <LineChart
+                                width={400}
+                                height={200}
+                                data={pdf}
+                                margin={{ top: 10, bottom: 10, left: 10, right: 10 }} >
+                                <XAxis
+                                    dataKey="x"
+                                    type="number"
+                                    domain={[0, 1]}>
+                                    <Label
+                                        value="Success Rate"
+                                        offset={-5}
+                                        position="insideBottom" />
                                 </XAxis>
-                                <YAxis dataKey="y" type="number" tick={false}>
-                                    <Label value="Likelihood" offset={0} angle={-90} position="insideLeft" />
+                                <YAxis
+                                    dataKey="y"
+                                    type="number"
+                                    tick={false}>
+                                    <Label
+                                        value="Likelihood"
+                                        offset={0}
+                                        angle={-90}
+                                        position="insideLeft" />
                                 </YAxis>
-                                <Line type="monotone" dataKey="y" stroke="#8884d8" dot={false} activeDot={false} isAnimationActive={false} />
+                                <Line
+                                    type="monotone"
+                                    dataKey="y"
+                                    stroke="#8884d8"
+                                    dot={false}
+                                    activeDot={false}
+                                    isAnimationActive={false} />
                                 {hdi_lower_x != null && hdi_upper_x != null && (
                                     <ReferenceArea
                                         x1={hdi_lower_x}
@@ -140,15 +166,16 @@ function App() {
                                     <ReferenceDot x={mode} y={mode_y} r={5} fill="#388e3c" />
                                 )}
                             </LineChart>
-                            {/* Display statistics */}
-                            {/*<Typography>*/}
-                            {/*    Success rate is between <b>{hdi_lower_x.toFixed(2)}</b> and <b>{hdi_upper_x.toFixed(2)}</b>*/}
-                            {/*    {" "}at {Math.round(hdi_mass * 100)}% confidence. <br />*/}
-                            {/*    Most likely success rate is <b>{mode.toFixed(2)}</b>.*/}
-                            {/*</Typography>*/}
                             <Typography>
-                                Success rate is between <b>{hdi_lower_x != null ? hdi_lower_x.toFixed(2) : "N/A"}</b> and <b>{hdi_upper_x != null ? hdi_upper_x.toFixed(2) : "N/A"}</b>
-                                {" "}at {Math.round(hdi_mass * 100)}% confidence. <br/>
+                                Success rate is between {" "}
+                                <b>
+                                    {hdi_lower_x != null ? hdi_lower_x.toFixed(2) : "N/A"}
+                                </b>
+                                {" "} and {" "}
+                                <b>
+                                    {hdi_upper_x != null ? hdi_upper_x.toFixed(2) : "N/A"}
+                                </b>
+                                {" "} at {Math.round(hdi_mass * 100)}% confidence. <br/>
                                 Most likely success rate is <b>{mode != null ? mode.toFixed(2) : "N/A"}</b>.
                             </Typography>
                             <Typography variant="caption" color="textSecondary">
