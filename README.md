@@ -39,7 +39,7 @@ The UI shows:
 - **Backend:**
   - FastAPI (Python) for the API
   - Implements the HDI calculation in Python
-  - Exposes API endpoint(s) for the frontend to fetch $L, U, p^*$, and plot data
+  - Exposes API endpoint(s) for the frontend to fetch API response
 
 - **Deployment/Infrastructure:**
   - The frontend and backend are packaged in their own Docker containers.
