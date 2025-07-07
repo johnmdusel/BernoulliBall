@@ -23,7 +23,7 @@ function App() {
 
         setLoading(true);
         setErrorMsg("");
-        fetch(`${API_URL}?a=${aVal}&b=${bVal}&hdi_mass=${hdiVal/100}`)
+        fetch(`${API_URL}?a=${aVal}&b=${bVal}&hdi_mass=${hdiVal/100}`)  // backend wants 0 < hdi_mass < 1
             .then(res => {
                 if (!res.ok) throw new Error("Backend validation failed");
                 return res.json();
@@ -80,7 +80,7 @@ function App() {
                             onChange={handleA}
                             slotProps={{ input: {min: 1, step: 1} }}
                             error={!isValidA}
-                            helperText={!isValidA ? "Must be integer > 0" : ""}
+                            helperText={!isValidA ? "Must be a positive integer" : ""}
                             required
                             fullWidth
                         />
@@ -91,7 +91,7 @@ function App() {
                             onChange={handleB}
                             slotProps={{ input: {min: 1, step: 1} }}
                             error={!isValidB}
-                            helperText={!isValidB ? "Must be integer > 0" : ""}
+                            helperText={!isValidB ? "Must be a positive integer" : ""}
                             required
                             fullWidth
                         />
@@ -102,7 +102,7 @@ function App() {
                             onChange={handleHdi}
                             slotProps={{ input: {min: 1, max: 99, step: 1} }}
                             error={!isValidHdi}
-                            helperText={!isValidHdi ? "Must be integer between 0 and 100 (exclusive)" : ""}
+                            helperText={!isValidHdi ? "Must be an integer between 0 and 100 (exclusive)" : ""}
                             required
                             fullWidth
                         />
@@ -151,6 +151,7 @@ function App() {
                                     dot={false}
                                     activeDot={false}
                                     isAnimationActive={false} />
+                                {/* Only show ReferenceArea if HDI exists */}
                                 {hdi_lower_x != null && hdi_upper_x != null && (
                                     <ReferenceArea
                                         x1={hdi_lower_x}
@@ -166,20 +167,20 @@ function App() {
                                     <ReferenceDot x={mode} y={mode_y} r={5} fill="#388e3c" />
                                 )}
                             </LineChart>
+                            <Typography variant="caption" color="textSecondary">
+                                Showing # Successes: {a}, # Failures: {b}, Confidence Level: {hdi_mass}%
+                            </Typography>
                             <Typography>
-                                Success rate is between {" "}
+                                <br/>
+                                Success rate is most likely <b>{mode != null ? mode.toFixed(2) : "N/A"}</b>,
+                                but could be between {" "}
                                 <b>
                                     {hdi_lower_x != null ? hdi_lower_x.toFixed(2) : "N/A"}
                                 </b>
                                 {" "} and {" "}
                                 <b>
                                     {hdi_upper_x != null ? hdi_upper_x.toFixed(2) : "N/A"}
-                                </b>
-                                {" "} at {Math.round(hdi_mass * 100)}% confidence. <br/>
-                                Most likely success rate is <b>{mode != null ? mode.toFixed(2) : "N/A"}</b>.
-                            </Typography>
-                            <Typography variant="caption" color="textSecondary">
-                                Showing # Successes: {a}, # Failures: {b}
+                                </b>.
                             </Typography>
                         </CardContent>
                     </Card>
