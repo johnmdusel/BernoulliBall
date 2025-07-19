@@ -2,6 +2,7 @@ import random
 from typing import List, Tuple, Union
 
 from app.models import PDFPoint
+from app.enums import SprtEvaluation
 
 
 def evaluate_pdf(a: float, b: float, x: float) -> float:
@@ -22,6 +23,11 @@ def get_mode(a: float, b: float) -> Union[float, None]:
     Mode of beta distribution.
     """
     return (a - 1) / (a + b - 2)
+
+
+def _sample_beta(a: float, b: float, n: int, seed: int = 42) -> List[float]:
+    random.seed(seed)
+    return [random.betavariate(a, b) for _ in range(n)]
 
 
 def get_hdi(
@@ -53,6 +59,16 @@ def get_hdi(
     )
 
 
-def _sample_beta(a: float, b: float, n: int, seed: int = 42) -> List[float]:
-    random.seed(seed)
-    return [random.betavariate(a, b) for _ in range(n)]
+def get_sprt(
+        a: float, b: float, confidence: float, lo: float, hi: float, n_samples=10**5
+) -> Tuple[float, SprtEvaluation]:
+    samples = _sample_beta(a, b, n_samples)
+    prob_requirement_met = sum(map(lambda p: lo < p < hi, samples)) / n_samples
+    # TODO calculate endpoints from relative costs
+    if prob_requirement_met > confidence:
+        sprt_eval = SprtEvaluation.PASS
+    elif prob_requirement_met < 1 - confidence:
+        sprt_eval = SprtEvaluation.FAIL
+    else:
+        sprt_eval = SprtEvaluation.CONTINUE
+    return (prob_requirement_met, sprt_eval)

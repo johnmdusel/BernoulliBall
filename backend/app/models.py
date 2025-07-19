@@ -15,3 +15,10 @@ class EstimateResponse(BaseModel):
     hdi_lower_x: Optional[float]
     hdi_upper_x: Optional[float]
     mode: Optional[float]
+
+class EvaluateResponse(BaseModel):
+    a: float
+    b: float
+    confidence: float
+    prob_requirement_met: float
+    evaluation: str
