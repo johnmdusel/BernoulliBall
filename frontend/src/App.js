@@ -2,16 +2,21 @@ import React, { useState } from 'react';
 import { Container, Typography, Card, CardContent, CircularProgress, TextField, Box, Alert } from '@mui/material';
 import { LineChart, Line, XAxis, YAxis, ReferenceArea, ReferenceDot, Label } from 'recharts';
 
-const API_URL = 'http://localhost:8000/estimate';
+const API_URL_ESTIMATE = 'http://localhost:8000/estimate';
+const API_URL_EVALUATE = 'http://localhost:8000/evaluate';
 
 function App() {
     // Parameter state
     const [a, setA] = useState(1);
     const [b, setB] = useState(1);
     let [hdiMass, setHdiMass] = useState(95);
+    let [confidence, setConfidence] = useState(95);
+    let [lo, setLo] = useState(0);
+    let [hi, setHi] = useState(1);
 
     // Data and loading state
     const [estimate, setEstimate] = useState(null);
+    const [evaluate, setEvaluate] = useState(null);
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
 
@@ -23,7 +28,8 @@ function App() {
 
         setLoading(true);
         setErrorMsg("");
-        fetch(`${API_URL}?a=${aVal}&b=${bVal}&hdi_mass=${hdiVal/100}`)  // backend wants 0 < hdi_mass < 1
+        // backend wants 0 < hdi_mass < 1
+        fetch(`${API_URL_ESTIMATE}?a=${aVal}&b=${bVal}&hdi_mass=${hdiVal/100}`)
             .then(res => {
                 if (!res.ok) throw new Error("Backend validation failed");
                 return res.json();
@@ -39,10 +45,40 @@ function App() {
             });
     }
 
+    function fetchEvaluate(aVal, bVal, confVal, loVal, hiVal) {
+        if (!(Number.isInteger(aVal) && aVal > 0)) return;
+        if (!(Number.isInteger(bVal) && bVal > 0)) return;
+        if (!(Number.isInteger(confVal) && confVal > 0 && confVal < 100)) return;
+        if (!(loVal >= 0 && loVal < 1)) return;
+        if (!(hiVal > 0 && hiVal <= 1)) return;
+        if (!(loVal < hiVal)) return;
+
+        setLoading(true);
+        setErrorMsg("");
+        // backend wants 0 < confidence < 1
+        fetch(`${API_URL_EVALUATE}?a=${aVal}&b=${bVal}&confidence=${confVal/100}&lo=${loVal}&hi=${hiVal}`)
+            .then(res => {
+                if (!res.ok) throw new Error("Backend validation failed");
+                return res.json();
+            })
+            .then(data => {
+                setEvaluate(data);
+                setLoading(false);
+            })
+            .catch(err => {
+                setEvaluate(null);
+                setLoading(false);
+                setErrorMsg("Failed to fetch evaluation: " + err.message);
+            })
+    }
+
     // Validation logic
     const isValidA = Number.isInteger(a) && a > 0;
     const isValidB = Number.isInteger(b) && b > 0;
     const isValidHdi = Number.isInteger(hdiMass) && hdiMass > 0 && hdiMass < 100;
+    const isValidConfidence = Number.isInteger(confidence) && confidence > 0 && confidence < 100;
+    const isValidLo = lo >= 0 && lo < 1
+    const isValidHi = hi > 0 && hi <= 1
 
     // Handlers
     const handleA = e => {
@@ -63,6 +99,24 @@ function App() {
         setHdiMass(newHdi);
         fetchEstimate(a, b, newHdi); // use current a, b
     };
+    const handleConfidence = e => {
+        const val = parseInt(e.target.value, 10);
+        const newConfidence = Number.isNan(val) ? "" : val;
+        setConfidence(newConfidence);
+        fetchEvaluate(a, b, newConfidence, lo, hi);
+    };
+    const handleLo = e => {
+        const val = parseFloat(e.target.value);
+        const newLo = Number.isNaN(val) ? "" : Math.max(0, val);
+        setLo(newLo);
+        fetchEvaluate(a, b, confidence, newLo, hi);
+    }
+    const handleHi = e => {
+        const val = parseFloat(e.target.value);
+        const newHi = Number.isNaN(val) ? "" : Math.min(1, val);
+        setHi(newHi);
+        fetchEvaluate(a, b, confidence, lo, newHi);
+    }
 
     return (
         <Container maxWidth="sm" sx={{ mt: 4 }}>
