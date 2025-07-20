@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Container, Typography, Card, CardContent, CircularProgress, TextField, Box, Alert } from '@mui/material';
+import { Container, Typography, Card, CardContent, CircularProgress, TextField, Box, Alert, Tab, Tabs } from '@mui/material';
 import { LineChart, Line, XAxis, YAxis, ReferenceArea, ReferenceDot, Label } from 'recharts';
+import ParameterControls from './components/ParameterControls'
 
 const API_URL_ESTIMATE = 'http://localhost:8000/estimate';
 const API_URL_EVALUATE = 'http://localhost:8000/evaluate';
@@ -13,6 +14,7 @@ function App() {
     let [confidence, setConfidence] = useState(95);
     let [lo, setLo] = useState(0);
     let [hi, setHi] = useState(1);
+    let [appMode, setAppMode] = useState("Estimate")
 
     // Data and loading state
     const [estimate, setEstimate] = useState(null);
@@ -117,50 +119,49 @@ function App() {
         setHi(newHi);
         fetchEvaluate(a, b, confidence, lo, newHi);
     }
+    const handleAppModeChange = e => {
+        const val = e.target.value;
+        const newAppMode = val;  // TODO validate
+        setAppMode(newAppMode);
+    }
+
+    // return (
+    //     <Container
+    //         maxWidth="sm"
+    //         sx={{mt: 4}}
+    //     >
+    //         <Typography variant="h5" align="center" gutterBottom>
+    //             BernoulliBall: Success Rate Tool
+    //         </Typography>
+    //         <Tabs
+    //             value={appMode}
+    //             onChange={handleAppModeChange}
+    //             variant="fixedWidth"
+    //             centered
+    //         >
+    //             <Tab label="Estimation Mode" value="Estimate"/>
+    //             <Tab label="Evaluation Mode" value="Evaluate"/>
+    //         </Tabs>
+    //         {/*{*/}
+    //         {/*    appmode === "Estimate" ? <EstimationComponent/> */}
+    //         {/*        : <EvaluationComponent/>*/}
+    //         {/*}*/}
+    //     </Container>
+    // )
 
     return (
         <Container maxWidth="sm" sx={{ mt: 4 }}>
             <Typography variant="h4" align="center" gutterBottom>
-                Success Rate Estimate
+                BernoulliBall -- Uncertainty Management Tool
             </Typography>
             {/* Parameter controls */}
             <Card sx={{ mb: 2 }}>
                 <CardContent>
-                    <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-                        <TextField
-                            label="# Successes"
-                            type="number"
-                            value={a}
-                            onChange={handleA}
-                            slotProps={{ input: {min: 1, step: 1} }}
-                            error={!isValidA}
-                            helperText={!isValidA ? "Must be a positive integer" : ""}
-                            required
-                            fullWidth
-                        />
-                        <TextField
-                            label="# Failures"
-                            type="number"
-                            value={b}
-                            onChange={handleB}
-                            slotProps={{ input: {min: 1, step: 1} }}
-                            error={!isValidB}
-                            helperText={!isValidB ? "Must be a positive integer" : ""}
-                            required
-                            fullWidth
-                        />
-                        <TextField
-                            label="Confidence Level (%)"
-                            type="number"
-                            value={hdiMass}
-                            onChange={handleHdi}
-                            slotProps={{ input: {min: 1, max: 99, step: 1} }}
-                            error={!isValidHdi}
-                            helperText={!isValidHdi ? "Must be an integer between 0 and 100 (exclusive)" : ""}
-                            required
-                            fullWidth
-                        />
-                    </Box>
+                    <ParameterControls
+                        a={a} handleA={handleA} isValidA={isValidA}
+                        b={b} handleB={handleB} isValidB={isValidB}
+                        hdiMass={hdiMass} handleHdi={handleHdi} isValidHdi={isValidHdi}
+                    />
                 </CardContent>
             </Card>
             {/* Error message */}
