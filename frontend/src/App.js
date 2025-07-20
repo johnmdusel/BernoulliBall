@@ -121,9 +121,7 @@ function App() {
         setHi(newHi);
         fetchEvaluate(a, b, confidence, lo, newHi);
     }
-    const handleAppModeChange = e => {
-        const val = e.target.value;
-        const newAppMode = val;  // TODO validate
+    const handleAppModeChange = (e, newAppMode) => {
         setAppMode(newAppMode);
     }
 
