@@ -3,6 +3,7 @@ import { Container, Typography, Card, CardContent, CircularProgress, TextField, 
 import { LineChart, Line, XAxis, YAxis, ReferenceArea, ReferenceDot, Label } from 'recharts';
 import ParameterControls from './components/ParameterControls'
 import EstimationComponent from './components/EstimationComponent';
+import EvaluationComponent from './components/EvaluationComponent';
 
 const API_URL_ESTIMATE = 'http://localhost:8000/estimate';
 const API_URL_EVALUATE = 'http://localhost:8000/evaluate';
@@ -126,43 +127,56 @@ function App() {
         setAppMode(newAppMode);
     }
 
-    // return (
-    //     <Container
-    //         maxWidth="sm"
-    //         sx={{mt: 4}}
-    //     >
-    //         <Typography variant="h5" align="center" gutterBottom>
-    //             BernoulliBall: Success Rate Tool
-    //         </Typography>
-    //         <Tabs
-    //             value={appMode}
-    //             onChange={handleAppModeChange}
-    //             variant="fixedWidth"
-    //             centered
-    //         >
-    //             <Tab label="Estimation Mode" value="Estimate"/>
-    //             <Tab label="Evaluation Mode" value="Evaluate"/>
-    //         </Tabs>
-    //         {/*{*/}
-    //         {/*    appmode === "Estimate" ? <EstimationComponent/> */}
-    //         {/*        : <EvaluationComponent/>*/}
-    //         {/*}*/}
-    //     </Container>
-    // )
-
     return (
-        <Container maxWidth="sm" sx={{ mt: 4 }}>
-            <Typography variant="h4" align="center" gutterBottom>
-                BernoulliBall -- Uncertainty Management Tool
+        <Container
+            maxWidth="sm"
+            sx={{mt: 4}}
+        >
+            <Typography variant="h5" align="center" gutterBottom>
+                BernoulliBall: Success Rate Tool
             </Typography>
-            <EstimationComponent
-                a={a} handleA={handleA} isValidA={isValidA}
-                b={b} handleB={handleB} isValidB={isValidB}
-                hdiMass={hdiMass} handleHdi={handleHdi} isValidHdi={isValidHdi}
-                errorMsg={errorMsg} loading={loading} estimate={estimate}
-            />
+            <Tabs
+                value={appMode}
+                onChange={handleAppModeChange}
+                variant="fixedWidth"
+                centered
+            >
+                <Tab label="Estimation Mode" value="Estimate"/>
+                <Tab label="Evaluation Mode" value="Evaluate"/>
+            </Tabs>
+            {
+                appMode === "Estimate" ?
+                    <EstimationComponent
+                        a={a} handleA={handleA} isValidA={isValidA}
+                        b={b} handleB={handleB} isValidB={isValidB}
+                        hdiMass={hdiMass} handleHdi={handleHdi} isValidHdi={isValidHdi}
+                        errorMsg={errorMsg} loading={loading} estimate={estimate}
+
+                    />
+                    : <EvaluationComponent
+                        a={a} handleA={handleA} isValidA={isValidA}
+                        b={b} handleB={handleB} isValidB={isValidB}
+                        hdiMass={hdiMass} handleHdi={handleHdi} isValidHdi={isValidHdi}
+                        errorMsg={errorMsg} loading={loading} estimate={estimate}
+
+                    />
+            }
         </Container>
     );
+
+    // return (
+    //     <Container maxWidth="sm" sx={{ mt: 4 }}>
+    //         <Typography variant="h4" align="center" gutterBottom>
+    //             BernoulliBall -- Uncertainty Management Tool
+    //         </Typography>
+    //         <EstimationComponent
+    //             a={a} handleA={handleA} isValidA={isValidA}
+    //             b={b} handleB={handleB} isValidB={isValidB}
+    //             hdiMass={hdiMass} handleHdi={handleHdi} isValidHdi={isValidHdi}
+    //             errorMsg={errorMsg} loading={loading} estimate={estimate}
+    //         />
+    //     </Container>
+    // );
 }
 
 export default App;
