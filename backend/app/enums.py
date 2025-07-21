@@ -6,9 +6,9 @@ class SprtEvaluation(Enum):
     Indicates whether a requirement is met (PASS) or not met (FAIL),
     or whether further testing is necessary (CONTINUE).
     """
-    PASS = "Pass"
-    FAIL = "Fail"
-    CONTINUE = "Continue"
+    PASS = "Passes requirement"
+    FAIL = "Fails requirement"
+    CONTINUE = "Continue the experiment"
 
 
 class OperatingMode(Enum):

@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from .models import EstimateResponse, EvaluateResponse
-from .utils import get_unnormalized_pdf, get_mode, get_hdi, get_sprt
+from .utils import get_unit_normalized_pdf, get_mode, get_hdi, get_sprt
 
 router = APIRouter()
 
@@ -18,8 +18,8 @@ def get_estimate(a: float, b: float, hdi_mass: float) -> EstimateResponse:
     return EstimateResponse(
         a=a,
         b=b,
+        pdf=get_unit_normalized_pdf(a, b),
         hdi_mass=hdi_mass,
-        pdf=get_unnormalized_pdf(a, b),
         hdi_lower_x=hdi_lo,
         hdi_upper_x=hdi_hi,
         mode=mode,
@@ -33,6 +33,7 @@ def get_evaluate(
     return EvaluateResponse(
         a=a,
         b=b,
+        pdf=get_unit_normalized_pdf(a, b),
         confidence=confidence,
         prob_requirement_met=prob,
         evaluation=sprt_eval.value

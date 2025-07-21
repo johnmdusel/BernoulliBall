@@ -9,13 +9,15 @@ def evaluate_pdf(a: float, b: float, x: float) -> float:
     return x ** (a - 1) * (1 - x) ** (b - 1)
 
 
-def get_unnormalized_pdf(a: float, b: float, n_points: int = 100) -> List[PDFPoint]:
+def get_unit_normalized_pdf(a: float, b: float, n_points: int = 100) -> List[PDFPoint]:
     """
-    Returns a list of *unnormalized* PDF values of beta distribution.
+    Returns a list of PDF values of beta distribution, normalized so the
+    maximum value is 1.0.
     """
     xs = [x / n_points for x in range(n_points + 1)]
     ys = [evaluate_pdf(a, b, x) for x in xs]
-    return [PDFPoint(x=x, y=y) for x, y in zip(xs, ys)]
+    ymax = max(ys)
+    return [PDFPoint(x=x, y=y/ymax) for x, y in zip(xs, ys)]
 
 
 def get_mode(a: float, b: float) -> Union[float, None]:

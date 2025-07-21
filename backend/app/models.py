@@ -6,19 +6,18 @@ class PDFPoint(BaseModel):
     x: float
     y: float
 
-
-class EstimateResponse(BaseModel):
+class BaseResponse(BaseModel):
     a: float
     b: float
-    hdi_mass: float
     pdf: List[PDFPoint]
+
+class EstimateResponse(BaseResponse):
+    hdi_mass: float
     hdi_lower_x: Optional[float]
     hdi_upper_x: Optional[float]
     mode: Optional[float]
 
-class EvaluateResponse(BaseModel):
-    a: float
-    b: float
+class EvaluateResponse(BaseResponse):
     confidence: float
     prob_requirement_met: float
     evaluation: str
