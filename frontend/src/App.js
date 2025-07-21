@@ -89,13 +89,15 @@ function App() {
         const val = parseInt(e.target.value, 10);
         const newA = Number.isNaN(val) ? "" : Math.max(1, val);
         setA(newA);
-        fetchEstimate(newA, b, hdiMass); // use current b, hdiMass
+        appMode === "Estimate" ? fetchEstimate(newA, b, hdiMass)
+                               : fetchEvaluate(newA, b, confidence, lo, hi);
     };
     const handleB = e => {
         const val = parseInt(e.target.value, 10);
         const newB = Number.isNaN(val) ? "" : Math.max(1, val);
         setB(newB);
-        fetchEstimate(a, newB, hdiMass); // use current a, hdiMass
+        appMode === "Estimate" ? fetchEstimate(a, newB, hdiMass)
+                               : fetchEvaluate(a, newB, confidence, lo, hi);
     };
     const handleHdi = e => {
         const val = parseInt(e.target.value, 10);
@@ -123,6 +125,8 @@ function App() {
     }
     const handleAppModeChange = (e, newAppMode) => {
         setAppMode(newAppMode);
+        appMode === "Estimate" ? fetchEstimate(a, b, hdiMass)
+                               : fetchEvaluate(a, b, confidence, lo, hi);
     }
 
     return (
@@ -143,21 +147,21 @@ function App() {
                 <Tab label="Evaluation Mode" value="Evaluate"/>
             </Tabs>
             {
-                appMode === "Estimate" ?
-                    <EstimationComponent
-                        a={a} handleA={handleA} isValidA={isValidA}
-                        b={b} handleB={handleB} isValidB={isValidB}
-                        hdiMass={hdiMass} handleHdi={handleHdi} isValidHdi={isValidHdi}
-                        errorMsg={errorMsg} loading={loading} estimate={estimate}
+                appMode === "Estimate" ? <EstimationComponent
+                                            a={a} handleA={handleA} isValidA={isValidA}
+                                            b={b} handleB={handleB} isValidB={isValidB}
+                                            hdiMass={hdiMass} handleHdi={handleHdi} isValidHdi={isValidHdi}
+                                            errorMsg={errorMsg} loading={loading} estimate={estimate}
 
-                    />
-                    : <EvaluationComponent
-                        a={a} handleA={handleA} isValidA={isValidA}
-                        b={b} handleB={handleB} isValidB={isValidB}
-                        hdiMass={hdiMass} handleHdi={handleHdi} isValidHdi={isValidHdi}
-                        errorMsg={errorMsg} loading={loading} estimate={estimate}
-
-                    />
+                                         />
+                                       : <EvaluationComponent
+                                            a={a} handleA={handleA} isValidA={isValidA}
+                                            b={b} handleB={handleB} isValidB={isValidB}
+                                            confidence={confidence} handleConfidence={handleConfidence} isValidConfidence={isValidConfidence}
+                                            lo={lo} handleLo={handleLo} isValidLo={isValidLo}
+                                            hi={hi} handleHi={handleHi} isValidHi={isValidHi}
+                                            errorMsg={errorMsg} loading={loading} evaluate={evaluate}
+                                         />
             }
         </Container>
     );

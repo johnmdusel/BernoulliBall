@@ -4,7 +4,7 @@ import { TextField, Box } from '@mui/material';
 const ParameterControls = ({
        a, handleA, isValidA,
        b, handleB, isValidB,
-       hdiMass, handleHdi, isValidHdi,
+       confidence, handleConfidence, isValidConfidence,
    }) => (
     <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
         <TextField
@@ -32,11 +32,11 @@ const ParameterControls = ({
         <TextField
             label="Confidence Level (%)"
             type="number"
-            value={hdiMass}
-            onChange={handleHdi}
+            value={confidence}
+            onChange={handleConfidence}
             inputProps={{ min: 1, max: 99, step: 1 }}
-            error={!isValidHdi}
-            helperText={!isValidHdi ? "Must be an integer between 0 and 100 (exclusive)" : ""}
+            error={!isValidConfidence}
+            helperText={!isValidConfidence ? "Must be an integer between 0 and 100 (exclusive)" : ""}
             required
             fullWidth
         />
