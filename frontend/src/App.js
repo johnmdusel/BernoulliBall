@@ -10,11 +10,11 @@ function App() {
     // Parameter state
     const [a, setA] = useState(1);
     const [b, setB] = useState(1);
-    let [hdiMass, setHdiMass] = useState(95);
-    let [confidence, setConfidence] = useState(95);
-    let [lo, setLo] = useState(0);
-    let [hi, setHi] = useState(1);
-    let [appMode, setAppMode] = useState("Estimate")
+    const [hdiMass, setHdiMass] = useState(95);
+    const [confidence, setConfidence] = useState(95);
+    const [lo, setLo] = useState(0);
+    const [hi, setHi] = useState(1);
+    const [appMode, setAppMode] = useState("Estimate")
 
     // Data and loading state
     const [estimate, setEstimate] = useState(null);
@@ -170,20 +170,6 @@ function App() {
             }
         </Container>
     );
-
-    // return (
-    //     <Container maxWidth="sm" sx={{ mt: 4 }}>
-    //         <Typography variant="h4" align="center" gutterBottom>
-    //             BernoulliBall -- Uncertainty Management Tool
-    //         </Typography>
-    //         <EstimationComponent
-    //             a={a} handleA={handleA} isValidA={isValidA}
-    //             b={b} handleB={handleB} isValidB={isValidB}
-    //             hdiMass={hdiMass} handleHdi={handleHdi} isValidHdi={isValidHdi}
-    //             errorMsg={errorMsg} loading={loading} estimate={estimate}
-    //         />
-    //     </Container>
-    // );
 }
 
 export default App;
