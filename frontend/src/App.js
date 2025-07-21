@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Container, Typography, Tab, Tabs } from '@mui/material';
 import EstimationComponent from './components/EstimationComponent';
 import EvaluationComponent from './components/EvaluationComponent';
@@ -21,6 +21,16 @@ function App() {
     const [evaluate, setEvaluate] = useState(null);
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
+
+    useEffect(() => {
+        if (appMode === "Estimate") {
+            fetchEstimate(a, b, hdiMass);
+        } else if (appMode === "Evaluate") {
+            fetchEvaluate(a, b, confidence, lo, hi);
+        }
+        // already call fetch on each param change in the handlers
+        // eslint-disable-next-line
+    }, [appMode]);
 
     // Fetches the estimate with provided parameters, after validation
     function fetchEstimate(aVal, bVal, hdiVal) {
@@ -123,8 +133,6 @@ function App() {
     }
     const handleAppModeChange = (e, newAppMode) => {
         setAppMode(newAppMode);
-        appMode === "Estimate" ? fetchEstimate(a, b, hdiMass)
-                               : fetchEvaluate(a, b, confidence, lo, hi);
     }
 
     return (
