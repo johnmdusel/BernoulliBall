@@ -12,7 +12,7 @@ const ParameterControls = ({
             type="number"
             value={a}
             onChange={handleA}
-            inputProps={{ min: 1, step: 1 }}
+            slotProps={{ input: {min: 1, step: 1} }}
             error={!isValidA}
             helperText={!isValidA ? "Must be a positive integer" : ""}
             required
@@ -23,7 +23,7 @@ const ParameterControls = ({
             type="number"
             value={b}
             onChange={handleB}
-            inputProps={{ min: 1, step: 1 }}
+            slotProps={{ input: {min: 1, step: 1} }}
             error={!isValidB}
             helperText={!isValidB ? "Must be a positive integer" : ""}
             required
@@ -34,7 +34,7 @@ const ParameterControls = ({
             type="number"
             value={confidence}
             onChange={handleConfidence}
-            inputProps={{ min: 1, max: 99, step: 1 }}
+            slotProps={{ input: {min: 1, max: 99, step: 1} }}
             error={!isValidConfidence}
             helperText={!isValidConfidence ? "Must be an integer between 0 and 100 (exclusive)" : ""}
             required

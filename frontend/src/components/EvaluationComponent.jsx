@@ -28,7 +28,7 @@ const EvaluationComponent = ({
                         type="number"
                         value={lo}
                         onChange={handleLo}
-                        inputProps={{ min: 0, max: 0.99, step: 0.01 }}
+                        slotProps={{ input: {min: 0, max: 0.99, step: 0.05} }}
                         error={!isValidLo}
                         helperText={!isValidLo ? "Must be a decimal between 0 and 0.99." : ""}
                         required
@@ -38,7 +38,7 @@ const EvaluationComponent = ({
                         type="number"
                         value={hi}
                         onChange={handleHi}
-                        inputProps={{ min: 0.01, max: 1, step: 0.01 }}
+                        slotProps={{ input: {min: 0.01, max: 1, step: 0.05} }}
                         error={!isValidHi}
                         helperText={!isValidHi ? "Must be a decimal between 0.01 and 1" : ""}
                         required
@@ -54,68 +54,74 @@ const EvaluationComponent = ({
         {loading && <CircularProgress />}
         {!loading && evaluate && (() => {
 
-            const { a, b, confidence, prob_requirement_met, outcome } = evaluate;
+            const { a, b, pdf, confidence, prob_requirement_met, evaluation } = evaluate;
 
-            const probDisplay = prob_requirement_met != null ? prob_requirement_met.toFixed(2) : "N/A";
+            // const probDisplay = prob_requirement_met != null ? prob_requirement_met : "N/A";
+            const probDisplay = prob_requirement_met != null ? prob_requirement_met.toFixed(3) : "N/A";
+            const evaluationDisplay = evaluation != null ? evaluation : "N/A";
+            const confidenceDisplay = confidence != null ? 100 * confidence : "N/A";
 
             return (
                 <Card>
                     <CardContent>
 
-                        {/* Plotting Beta PDF */}
-                        {/*<LineChart*/}
-                        {/*    width={400}*/}
-                        {/*    height={200}*/}
-                        {/*    data={pdf}*/}
-                        {/*    margin={{ top: 10, bottom: 10, left: 10, right: 10 }} >*/}
-                        {/*    <XAxis*/}
-                        {/*        dataKey="x"*/}
-                        {/*        type="number"*/}
-                        {/*        domain={[0, 1]}>*/}
-                        {/*        <Label*/}
-                        {/*            value="Success Rate"*/}
-                        {/*            offset={-5}*/}
-                        {/*            position="insideBottom" />*/}
-                        {/*    </XAxis>*/}
-                        {/*    <YAxis*/}
-                        {/*        dataKey="y"*/}
-                        {/*        type="number"*/}
-                        {/*        tick={false}>*/}
-                        {/*        <Label*/}
-                        {/*            value="Likelihood"*/}
-                        {/*            offset={0}*/}
-                        {/*            angle={-90}*/}
-                        {/*            position="insideLeft" />*/}
-                        {/*    </YAxis>*/}
-                        {/*    <Line*/}
-                        {/*        type="monotone"*/}
-                        {/*        dataKey="y"*/}
-                        {/*        stroke="#8884d8"*/}
-                        {/*        dot={false}*/}
-                        {/*        activeDot={false}*/}
-                        {/*        isAnimationActive={false} />*/}
+                        <LineChart
+                            width={400}
+                            height={200}
+                            data={pdf}
+                            margin={{ top: 10, bottom: 10, left: 10, right: 10 }} >
+                            <XAxis
+                                dataKey="x"
+                                type="number"
+                                domain={[0, 1]}>
+                                <Label
+                                    value="Success Rate"
+                                    offset={-5}
+                                    position="insideBottom" />
+                            </XAxis>
+                            <YAxis
+                                dataKey="y"
+                                type="number"
+                                domain={[-0.01, 1]}
+                                tick={false}>
+                                <Label
+                                    value="Likelihood"
+                                    offset={0}
+                                    angle={-90}
+                                    position="insideLeft" />
+                            </YAxis>
+                            <Line
+                                type="monotone"
+                                dataKey="y"
+                                stroke="#8884d8"
+                                dot={false}
+                                activeDot={false}
+                                isAnimationActive={false} />
 
-                        {/*    /!* Only show ReferenceArea if HDI exists *!/*/}
-                        {/*    {hdi_lower_x != null && hdi_upper_x != null && (*/}
-                        {/*        <ReferenceArea*/}
-                        {/*            x1={lo}*/}
-                        {/*            y1={0}*/}
-                        {/*            x2={hi}*/}
-                        {/*            y2={0.02 * mode_y}*/}
-                        {/*            strokeOpacity={0.3}*/}
-                        {/*            fill="red"*/}
-                        {/*        />*/}
-                        {/*    )}*/}
+                            {/* Only show ReferenceArea if HDI exists */}
+                            {lo != null && hi != null && (
+                                <ReferenceArea
+                                    x1={lo}
+                                    y1={-0.01}
+                                    x2={hi}
+                                    y2={0.01}
+                                    strokeOpacity={0.3}
+                                    fill="red"
+                                />
+                            )}
 
-                        {/*</LineChart>*/}
+                        </LineChart>
 
-                        {/*<Typography variant="caption" color="textSecondary">*/}
-                        {/*    Showing # Successes: {a}, # Failures: {b}, Confidence Level: {hdi_mass}%*/}
-                        {/*</Typography>*/}
+                        <Typography variant="caption" color="textSecondary">
+                            Showing # Successes: {a}, # Failures: {b}, Requirement: Between {lo} and {hi}.
+                        </Typography>
 
-                        <Typography>
+                        <Typography
+                            // align="center"
+                        >
                             Probability that requirement is met: <b>{probDisplay}</b>.
-                            Evaluation: <b>{outcome}</b>.
+                            <br/>
+                            Evaluation: <b>{evaluationDisplay}</b> (at {confidenceDisplay}% confidence).
                         </Typography>
 
                     </CardContent>

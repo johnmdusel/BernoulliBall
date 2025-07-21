@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Typography, Card, CardContent, CircularProgress, TextField, Box, Alert, Tab, Tabs } from '@mui/material';
-import { LineChart, Line, XAxis, YAxis, ReferenceArea, ReferenceDot, Label } from 'recharts';
-import ParameterControls from './components/ParameterControls'
+import { Container, Typography, Tab, Tabs } from '@mui/material';
 import EstimationComponent from './components/EstimationComponent';
 import EvaluationComponent from './components/EvaluationComponent';
 
@@ -107,7 +105,7 @@ function App() {
     };
     const handleConfidence = e => {
         const val = parseInt(e.target.value, 10);
-        const newConfidence = Number.isNan(val) ? "" : val;
+        const newConfidence = Number.isNaN(val) ? "" : val;
         setConfidence(newConfidence);
         fetchEvaluate(a, b, newConfidence, lo, hi);
     };
@@ -152,7 +150,6 @@ function App() {
                                             b={b} handleB={handleB} isValidB={isValidB}
                                             hdiMass={hdiMass} handleHdi={handleHdi} isValidHdi={isValidHdi}
                                             errorMsg={errorMsg} loading={loading} estimate={estimate}
-
                                          />
                                        : <EvaluationComponent
                                             a={a} handleA={handleA} isValidA={isValidA}

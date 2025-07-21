@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card, CardContent, CircularProgress, Alert, Typography, TextField} from '@mui/material';
+import {Card, CardContent, CircularProgress, Alert, Typography} from '@mui/material';
 import { LineChart, Line, XAxis, YAxis, ReferenceArea, ReferenceDot, Label } from 'recharts';
 import ParameterControls from './ParameterControls';
 
@@ -30,8 +30,6 @@ const EstimationComponent = ({
 
             const { a, b, hdi_mass, pdf, hdi_lower_x, hdi_upper_x, mode } = estimate;
 
-            const mode_y = Math.max(...pdf.map(p => p.y));
-
             return (
                 <Card>
                     <CardContent>
@@ -54,6 +52,7 @@ const EstimationComponent = ({
                             <YAxis
                                 dataKey="y"
                                 type="number"
+                                domain={[-0.01, 1]}
                                 tick={false}>
                                 <Label
                                     value="Likelihood"
@@ -73,9 +72,9 @@ const EstimationComponent = ({
                             {hdi_lower_x != null && hdi_upper_x != null && (
                                 <ReferenceArea
                                     x1={hdi_lower_x}
-                                    y1={0}
+                                    y1={-0.01}
                                     x2={hdi_upper_x}
-                                    y2={0.02 * mode_y}
+                                    y2={0.01}
                                     strokeOpacity={0.3}
                                     fill="red"
                                 />
@@ -83,7 +82,7 @@ const EstimationComponent = ({
 
                             {/* Only show ReferenceDot if mode exists */}
                             {mode != null && (
-                                <ReferenceDot x={mode} y={mode_y} r={5} fill="#388e3c" />
+                                <ReferenceDot x={mode} y={Math.max(...pdf.map(p => p.y))} r={5} fill="#388e3c" />
                             )}
 
                         </LineChart>
