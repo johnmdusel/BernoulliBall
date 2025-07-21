@@ -1,15 +1,12 @@
 # BernoulliBall
 
-A web app for maintaining and visualizing an estimate of the success rate`p` for Bernoulli trials. We are unsure about the true value of the success rate and represent this uncertainty in a Bayesian fashion. 
+A simple web app for maintaining and visualizing an estimate of the success rate`p` for Bernoulli trials. A separate "evaluation" mode lets the user decide whether the success rate passes a requirement, such as being 50% confidence that the success rate is at least 0.8. 
 
-###### I am using this project to learn about full-stack development concepts.
+We are unsure about the true success rate and represent this uncertainty in a Bayesian fashion.
 
----
+- The estimated success rate is captured by the most likely value and a range of likely values; these are the posterior mode and the posterior highest density interval (at the given confidence level) respectively.
 
-## Branch `evaluation-mode` (under development)
-
-Development branch for "evaluation mode" feature. 
-The user will use a selector to run the app in "estimation mode" or "evaluation mode".
+- A success rate is evaluated by checking whether the probability that the requirement is met is sufficiently high to be considered passing, or sufficiently low to be considered failing. *This approach is based on a decision-theoretic scenario applied to a sequential probability ratio test, with some simplifications to make elicitation more straightforward.*
 
 ---
 
@@ -17,7 +14,6 @@ The user will use a selector to run the app in "estimation mode" or "evaluation 
 
 ### **Estimation Mode**
 
-We're un
 The app estimates of the success rate is made using a Beta prior distribution with a Bernoulli likelihood function. To get an estimate the user enters:
 
  - The *number of successes/failures*. These are used to set the posterior Beta distribution's parameters.
@@ -29,33 +25,44 @@ The returned estimate comprises:
  - A *range of most likely success rates*. The HDI itself. 
 
  - The *most likely success rate*. The mode of the posterior Beta distribution.
-
-
-### **Evaluation Mode**
-
-In evaluation mode the user enters:
-
-- A requirement for the probability of success, *e.g.*,`p > 0.8`. Later, I might expand the user's options for specifying a requirement. Theoretically, any subset of [0, 1] will do.
-- A confidence level, *e.g.*, 95%. 
-
-The app will determine whether---at the given confidence level---the probability of success 
-- passes the requirement
-- fails the requirement
-- is indeterminate in the sense that further observations are needed to reach a definitive conclusion
-
-The calculation is a Bayesian variant of the classical sequential probability ration test (SPRT) of Wald.
-
-
-### **Data Visualization:**  
+ 
+#### **Data Visualization:**  
 The UI shows:
 	- A plot of the posterior PDF. 
 	 - The mode is visually indicated on the plot.
 	 - The HDI is shown as a highlighted region on the horizontal axis.
 	- A textual summary of the estimate.
 
+
+### **Evaluation Mode**
+
+In evaluation mode the user enters:
+
+- A requirement for the probability of success, *e.g.*,`p > 0.8`. *In the future, I might expand the user's options for specifying a requirement. Theoretically, any subset of [0, 1] will do.*
+
+- A confidence level, *e.g.*, 95%. 
+
+The app will determine whether---at the given confidence level---the probability of success 
+- passes the requirement
+- fails the requirement
+- needs further testing to reach a definitive conclusion
+
+The calculation is a Bayesian variant of the classical sequential probability ration test (SPRT) of Wald.
+ 
+#### **Data Visualization:**  
+The UI shows:
+	- Entry fields for the requirement range.
+	- A plot of the posterior PDF. 
+	 - The requirement range is shown as a highlighted region on the horizontal axis.
+	- A textual summary of the evaluation.
+
+
+
+
 ### **User Interaction:**  
    - Adjustable number of successes/failures.
    - Adjustable confidence level.
+   - Adjustable requirment (in evaluation mode).
    - Session-based and anonymous. No authentication, persistence, import, or export.
 
 ---
@@ -77,12 +84,7 @@ The UI shows:
 
 ---
 
-## API Contract
-
-The names used in the code will differ from the user-facing terminology. 
-For example, the user will see "confidence level" but the code will use `hdi_mass`. 
-
-### **Example API responses**
+##  Example API responses
 
 #### `/estimate`
  
@@ -90,14 +92,14 @@ For example, the user will see "confidence level" but the code will use `hdi_mas
 {
   "a": 3,
   "b": 5,
-  "hdi_mass": 0.95,
   "pdf": [
     { "x": 0.00, "y": 0.02 },
     { "x": 0.01, "y": 0.04 },
     // ...
   ],
-  "hdi_lower": 0.23,
-  "hdi_upper": 0.70,
+  "hdi_mass": 0.95,
+  "hdi_lower_x": 0.23,
+  "hdi_upper_x": 0.70,
   "mode": 0.55
 }
 ```
@@ -109,11 +111,14 @@ For example, the user will see "confidence level" but the code will use `hdi_mas
 {
   "a": 3,
   "b": 5,
+  "pdf": [
+    { "x": 0.00, "y": 0.02 },
+    { "x": 0.01, "y": 0.04 },
+    // ...
+  ],
   "confidence": 0.95,
-  "lo": 0.8,
-  "hi": 1.0,
-  "prob_requirements_met": 0.55,
-  "sprt_evaluationeval": "Fail"
+  "prob_requirement_met": 0.55,
+  "evaluation": "Fail"
 }
 ```
 
@@ -135,7 +140,7 @@ BernoulliBall/
 ├── frontend/
 │   ├── public/
 │   ├── src/
-│   │   ├── components/
+│   │   ├── components/       # Custom components
 │   │   ├── App.js
 │   │   └── index.js
 │   ├── package.json
@@ -152,3 +157,4 @@ docker compose build
 ```
 
 Going forward, just use `docker compose up` to run. To remove containers and the internal Docker network, run `docker compose down`.
+

@@ -39,9 +39,13 @@ def get_hdi(
     Estimated highest density interval from a beta distribution.
 
     :param a: Parameter
+
     :param b: Parameter
+
     :param hdi_mass: Confidence level from UI
+
     :param n_samples: Number of samples used for estimation
+
     :return: Estimated width, (lower_limit, upper_limit) of highest density interval
     """
     samples = sorted(_sample_beta(a, b, n_samples))
@@ -64,9 +68,36 @@ def get_hdi(
 def get_sprt(
         a: float, b: float, confidence: float, lo: float, hi: float, n_samples=10**5
 ) -> Tuple[float, SprtEvaluation]:
+    """
+    Simplified version of Bayesian sequantial probability ratio test, in which
+    the rewards for correctly passing or failing are normalized to 1.0. This
+    lets us work with the probability of passing requirements, instead of the
+    usual likelihood ratio. The requirements are easier to elicit in this case,
+    since they can be specified on the scale of the success rate, rather than
+    being expressed in terms of odds.
+
+    If the probability of meeting requirements exceeds `confidence`
+    the result is "Pass". If the probability of meeting requirements is less
+    than 1 - `confidence`, the result is "Fail". Otherwise, the result
+    is "Continue the experiment".
+
+    :param a: Parameter of beta distribution.
+
+    :param b: Parameter of beta distribution.
+
+    :param confidence: Number between 0 and 1 (exclusive).
+
+    :param lo: Lower limit of the required range.
+
+    :param hi: Upper limit of the required range.
+
+    :param n_samples: Number of samples used to approximate the probability of
+    meeting the requirement.
+
+    :return: (probability of meeting requirement, evaluation of success rate)
+    """
     samples = _sample_beta(a, b, n_samples)
     prob_requirement_met = sum(map(lambda p: lo < p < hi, samples)) / n_samples
-    # TODO calculate endpoints from relative costs
     if prob_requirement_met > confidence:
         sprt_eval = SprtEvaluation.PASS
     elif prob_requirement_met < 1 - confidence:
