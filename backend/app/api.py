@@ -1,6 +1,6 @@
-from fastapi import APIRouter, Query#, Depends
+from fastapi import APIRouter, Query
 
-from .models import EstimateResponse, EvaluateResponse#, RequirementParameters
+from .models import EstimateResponse, EvaluateResponse
 from .utils import get_unit_normalized_pdf, get_mode, get_hdi, get_sprt
 
 router = APIRouter()
@@ -40,8 +40,6 @@ def get_evaluate(
         lt=1,
         description="Confidence level of evaluation "
     ), 
-    # see TODO in models.py
-    # requirement: RequirementParameters = Depends()
     lo: float = Query(
         ..., 
         ge=0, 
@@ -55,7 +53,6 @@ def get_evaluate(
         description="Upper limit of required range"
     )
 ) -> EvaluateResponse:
-    # prob, sprt_eval = get_sprt(a, b, confidence, requirement.lo, requirement.hi)
     prob, sprt_eval = get_sprt(a, b, confidence, lo, hi)
     return EvaluateResponse(
         pdf=get_unit_normalized_pdf(a, b),

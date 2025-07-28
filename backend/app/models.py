@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import Optional, List
 
-from pydantic import BaseModel, Field, root_validator#, model_validator
+from pydantic import BaseModel, Field, root_validator
 
 
 class PDFPoint(BaseModel):
@@ -40,25 +40,6 @@ class EstimateResponse(BaseResponse):
             if key in values and values[key] is not None:
                 values[key] = round(values[key], 2)
         return values
-
-# TODO support multi-field constraints
-# class RequirementParameters(BaseModel):
-#     lo: float = Field(
-#         ge=0,
-#         lt=1,
-#         description="Lower limit of required range"
-#     )
-#     hi: float = Field(
-#         gt=0, 
-#         le=1,
-#         description="Upper limit of required range"
-#     )
-# 
-#     @model_validator(mode="after")
-#     def validate_requirement(self) -> "RequirementParameters":
-#         if self.hi <= self.lo:
-#             raise ValueError(f"`lo` ({self.lo}) must be less than `hi` ({self.hi})")
-#         return self
 
 class EvaluateResponse(BaseResponse):
     prob_requirement_met: float = Field(
