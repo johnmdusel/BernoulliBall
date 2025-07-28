@@ -42,11 +42,18 @@ class EstimateResponse(BaseResponse):
         return values
 
 class EvaluateResponse(BaseResponse):
-    prob_requirement_met: float = Field(
+    prob_requirement_met: Decimal = Field(
         ge=0, 
         le=1,
+        decimal_places=2,
         description="Probability that success rate meets requirements"
     )
     evaluation: str = Field(
         description="Evaluation of estimated success rate against requirements"
     )
+
+    @root_validator(pre=True)
+    def round_prob_requirement_met(cls, values):
+        if "prob_requirement_met" in values and values["prob_requirement_met"] is not None:
+            values["prob_requirement_met"] = round(values["prob_requirement_met"], 2)
+        return values

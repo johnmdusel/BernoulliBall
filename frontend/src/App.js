@@ -91,6 +91,7 @@ function App() {
     const isValidConfidence = Number.isInteger(confidence) && confidence > 0 && confidence < 100;
     const isValidLo = lo >= 0 && lo < 1
     const isValidHi = hi > 0 && hi <= 1
+    const isValidRequirement = lo < hi
 
     // Handlers
     const handleA = e => {
@@ -121,7 +122,7 @@ function App() {
     };
     const handleLo = e => {
         const val = parseFloat(e.target.value);
-        const newLo = Number.isNaN(val) ? "" : Math.max(0, val);
+        const newLo = Number.isNaN(val) ? "" : Math.max(0, val);        
         setLo(newLo);
         fetchEvaluate(a, b, confidence, newLo, hi);
     }
@@ -134,6 +135,8 @@ function App() {
     const handleAppModeChange = (e, newAppMode) => {
         setAppMode(newAppMode);
     }
+
+    console.log(`a=${a}, b=${b}`)
 
     return (
         <Container
@@ -165,6 +168,7 @@ function App() {
                                             confidence={confidence} handleConfidence={handleConfidence} isValidConfidence={isValidConfidence}
                                             lo={lo} handleLo={handleLo} isValidLo={isValidLo}
                                             hi={hi} handleHi={handleHi} isValidHi={isValidHi}
+                                            isValidRequirement={isValidRequirement}
                                             errorMsg={errorMsg} loading={loading} evaluate={evaluate}
                                          />
             }

@@ -28,7 +28,7 @@ const EstimationComponent = ({
         {loading && <CircularProgress />}
         {!loading && estimate && (() => {
 
-            const { a, b, hdi_mass, pdf, hdi_lower_x, hdi_upper_x, mode } = estimate;
+            const { pdf, hdi_lower_x, hdi_upper_x, mode } = estimate;
 
             return (
                 <Card>
@@ -88,7 +88,7 @@ const EstimationComponent = ({
                         </LineChart>
 
                         <Typography variant="caption" color="textSecondary">
-                            Showing # Successes: {a}, # Failures: {b}, Confidence Level: {hdi_mass}%
+                            Showing # Successes: {a}, # Failures: {b}, Confidence Level: {hdiMass}%
                         </Typography>
 
                         <Typography>

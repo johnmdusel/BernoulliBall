@@ -9,6 +9,7 @@ const EvaluationComponent = ({
     confidence, handleConfidence, isValidConfidence,
     lo, handleLo, isValidLo,
     hi, handleHi, isValidHi,
+    isValidRequirement,
     errorMsg, loading, evaluate
  }) => (
     <>
@@ -28,9 +29,9 @@ const EvaluationComponent = ({
                         type="number"
                         value={lo}
                         onChange={handleLo}
-                        slotProps={{ input: {min: 0, max: 0.99, step: 0.05} }}
-                        error={!isValidLo}
-                        helperText={!isValidLo ? "Must be a decimal between 0 and 0.99." : ""}
+                        slotProps={{ input: {min: 0, max: 1, step: 0.05} }}
+                        error={!(isValidLo & isValidRequirement)}
+                        helperText={!isValidLo ? "Must be between 0 and 1 but less than 'Upper'." : ""}
                         required
                     />
                     <TextField
@@ -38,9 +39,9 @@ const EvaluationComponent = ({
                         type="number"
                         value={hi}
                         onChange={handleHi}
-                        slotProps={{ input: {min: 0.01, max: 1, step: 0.05} }}
-                        error={!isValidHi}
-                        helperText={!isValidHi ? "Must be a decimal between 0.01 and 1" : ""}
+                        slotProps={{ input: {min: 0, max: 1, step: 0.05} }}
+                        error={!(isValidHi & isValidRequirement)}
+                        helperText={!isValidHi ? "Must be between 0 and 1 but greater than 'Lower'" : ""}
                         required
                     />
                 </Box>
@@ -54,12 +55,12 @@ const EvaluationComponent = ({
         {loading && <CircularProgress />}
         {!loading && evaluate && (() => {
 
-            const { a, b, pdf, confidence, prob_requirement_met, evaluation } = evaluate;
+            const { pdf, prob_requirement_met, evaluation } = evaluate;
 
             // const probDisplay = prob_requirement_met != null ? prob_requirement_met : "N/A";
-            const probDisplay = prob_requirement_met != null ? prob_requirement_met.toFixed(3) : "N/A";
+            const probDisplay = prob_requirement_met != null ? prob_requirement_met : "N/A";
             const evaluationDisplay = evaluation != null ? evaluation : "N/A";
-            const confidenceDisplay = confidence != null ? 100 * confidence : "N/A";
+            const confidenceDisplay = confidence != null ? confidence : "N/A";
 
             return (
                 <Card>
