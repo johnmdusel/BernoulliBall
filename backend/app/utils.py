@@ -69,7 +69,7 @@ def get_sprt(
         a: float, b: float, confidence: float, lo: float, hi: float, n_samples=10**5
 ) -> Tuple[float, SprtEvaluation]:
     """
-    Simplified version of Bayesian sequantial probability ratio test, in which
+    Simplified version of Bayesian sequential probability ratio test, in which
     the rewards for correctly passing or failing are normalized to 1.0. This
     lets us work with the probability of passing requirements, instead of the
     usual likelihood ratio. The requirements are easier to elicit in this case,

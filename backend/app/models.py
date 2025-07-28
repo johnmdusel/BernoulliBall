@@ -1,5 +1,7 @@
-from pydantic import BaseModel
-from typing import List, Optional
+from decimal import Decimal
+from typing import Optional, List
+
+from pydantic import BaseModel, Field
 
 
 class PDFPoint(BaseModel):
@@ -7,17 +9,13 @@ class PDFPoint(BaseModel):
     y: float
 
 class BaseResponse(BaseModel):
-    a: float
-    b: float
     pdf: List[PDFPoint]
 
 class EstimateResponse(BaseResponse):
-    hdi_mass: float
-    hdi_lower_x: Optional[float]
-    hdi_upper_x: Optional[float]
-    mode: Optional[float]
+    hdi_lower_x: Optional[Decimal] = Field(ge=0, le=1, decimal_places=2)
+    hdi_upper_x: Optional[Decimal] = Field(ge=0, le=1, decimal_places=2)
+    mode: Optional[Decimal] = Field(ge=0, le=1, decimal_places=2)
 
 class EvaluateResponse(BaseResponse):
-    confidence: float
-    prob_requirement_met: float
+    prob_requirement_met: float = Field(gt=0, lt=1)
     evaluation: str

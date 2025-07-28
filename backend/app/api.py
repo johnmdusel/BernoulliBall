@@ -12,14 +12,12 @@ def get_estimate(a: float, b: float, hdi_mass: float) -> EstimateResponse:
         hdi_lo, hdi_hi = None, None
         mode = None
     else:
-        _, (hdi_lo, hdi_hi) = get_hdi(a, b, hdi_mass)
-        mode = get_mode(a, b)
+        _, hdi_endpts = get_hdi(a, b, hdi_mass)
+        hdi_lo, hdi_hi = [round(endpt, 2) for endpt in hdi_endpts]
+        mode = round(get_mode(a, b), 2)
 
     return EstimateResponse(
-        a=a,
-        b=b,
         pdf=get_unit_normalized_pdf(a, b),
-        hdi_mass=hdi_mass,
         hdi_lower_x=hdi_lo,
         hdi_upper_x=hdi_hi,
         mode=mode,
@@ -31,10 +29,7 @@ def get_evaluate(
 ) -> EvaluateResponse:
     prob, sprt_eval = get_sprt(a, b, confidence, lo, hi)
     return EvaluateResponse(
-        a=a,
-        b=b,
         pdf=get_unit_normalized_pdf(a, b),
-        confidence=confidence,
         prob_requirement_met=prob,
         evaluation=sprt_eval.value
     )
