@@ -40,8 +40,7 @@ function App() {
 
         setLoading(true);
         setErrorMsg("");
-        // backend wants 0 < hdi_mass < 1
-        fetch(`${API_URL_ESTIMATE}?a=${aVal}&b=${bVal}&hdi_mass=${hdiVal/100}`)
+        fetch(`${API_URL_ESTIMATE}?a=${aVal}&b=${bVal}&hdi_mass=${hdiVal}`)
             .then(res => {
                 if (!res.ok) throw new Error("Backend validation failed");
                 return res.json();
@@ -67,8 +66,7 @@ function App() {
 
         setLoading(true);
         setErrorMsg("");
-        // backend wants 0 < confidence < 1
-        fetch(`${API_URL_EVALUATE}?a=${aVal}&b=${bVal}&confidence=${confVal/100}&lo=${loVal}&hi=${hiVal}`)
+        fetch(`${API_URL_EVALUATE}?a=${aVal}&b=${bVal}&confidence=${confVal}&lo=${loVal}&hi=${hiVal}`)
             .then(res => {
                 if (!res.ok) throw new Error("Backend validation failed");
                 return res.json();

@@ -10,16 +10,17 @@ router = APIRouter()
 def get_estimate(
     a: float = Query(..., gt=0, description="Parameter of beta distribution"),
     b: float = Query(..., gt=0, description="Parameter of beta distribution"), 
-    hdi_mass: float = Query(
+    hdi_mass: int = Query(
         ..., 
         gt=0, 
-        lt=1, 
-        description="Proportion of mass in posterior highest density interval"
+        lt=100, 
+        description="Percent of mass in posterior highest density interval"
     )
 ) -> EstimateResponse:
     if a == 1 and b == 1:
         hdi_lo, hdi_hi, mode = None, None, None
     else:
+        hdi_mass = hdi_mass / 100
         _, (hdi_lo, hdi_hi) = get_hdi(a, b, hdi_mass)
         mode = get_mode(a, b)
 
@@ -34,11 +35,11 @@ def get_estimate(
 def get_evaluate(
     a: float = Query(..., gt=0, description="Parameter of beta distribution"), 
     b: float = Query(..., gt=0, description="Parameter of beta distribution"), 
-    confidence: float = Query(
+    confidence: int = Query(
         ..., 
         gt=0,
-        lt=1,
-        description="Confidence level of evaluation "
+        lt=100,
+        description="Percent confidence level of evaluation "
     ), 
     lo: float = Query(
         ..., 
@@ -53,6 +54,7 @@ def get_evaluate(
         description="Upper limit of required range"
     )
 ) -> EvaluateResponse:
+    confidence = confidence / 100
     prob, sprt_eval = get_sprt(a, b, confidence, lo, hi)
     return EvaluateResponse(
         pdf=get_unit_normalized_pdf(a, b),
