@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import Optional, List
 
-from pydantic import BaseModel, Field, root_validator
+from pydantic import BaseModel, Field, root_validator#, model_validator
 
 
 class PDFPoint(BaseModel):
@@ -53,13 +53,12 @@ class EstimateResponse(BaseResponse):
 #         le=1,
 #         description="Upper limit of required range"
 #     )
-
-#     @root_validator(pre=True)
-#     def check_requirement_limits(cls, values):
-#         lo = values.get("lo")
-#         hi = values.get("hi")
-#         if lo is not None and hi is not None and hi <= lo:
-#             raise ValueError(f"`lo` must be < `hi`; got lo={lo}, hi={hi}")
+# 
+#     @model_validator(mode="after")
+#     def validate_requirement(self) -> "RequirementParameters":
+#         if self.hi <= self.lo:
+#             raise ValueError(f"`lo` ({self.lo}) must be less than `hi` ({self.hi})")
+#         return self
 
 class EvaluateResponse(BaseResponse):
     prob_requirement_met: float = Field(
