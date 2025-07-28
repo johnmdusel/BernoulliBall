@@ -93,14 +93,14 @@ const EstimationComponent = ({
 
                         <Typography>
                             <br/>
-                            Success rate is most likely <b>{mode != null ? mode.toFixed(2) : "N/A"}</b>,
+                            Success rate is most likely <b>{mode != null ? mode : "N/A"}</b>,
                             but could be between {" "}
                             <b>
-                                {hdi_lower_x != null ? hdi_lower_x.toFixed(2) : "N/A"}
+                                {hdi_lower_x != null ? hdi_lower_x : "N/A"}
                             </b>
                             {" "} and {" "}
                             <b>
-                                {hdi_upper_x != null ? hdi_upper_x.toFixed(2) : "N/A"}
+                                {hdi_upper_x != null ? hdi_upper_x : "N/A"}
                             </b>.
                         </Typography>
 
